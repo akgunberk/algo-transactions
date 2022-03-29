@@ -1,0 +1,122 @@
+{
+  "name":"afgov-staking",
+  "desc":"The staking/rewards subsystem of the Algorand-Foundation governance platform. The application supports bare optIn and clearState transactions, as well as delete (from its creator). The clearState executes the same logic as Governor_withdraw.",
+  "networks":{
+    "default":{ "appID": 654321 }
+  },
+  "methods":[
+    {
+      "name": "Creator_create",
+      "desc": "Create the application, recording the governance period timestamps, the rewards amount, and the ID of the voting and the consensus-manager applications. Must be called with appid==0. Makes inner calls to Staking_setID of the voting and mgr applications.",
+      "args":[
+          { "type":"uint64", "name":"signupEnds", "desc":"UNIX timestamp when signup ends" },
+          { "type":"uint64", "name":"commitmentEnds", "desc":"UNIX timestamp when commitment ends" },
+          { "type":"uint64", "name":"rewards", "desc":"The rewards pool size, in microAlgos" },
+          { "type":"application", "name":"votingApp", "desc":"The voting application" },
+          { "type":"application", "name":"consensusMgrApp", "desc":"The consensus-manager application" }
+      ],
+      "returns": { "type": "void" }
+    },
+    {
+      "name":"Governor_commitStake",
+      "desc":"Committing stake to upcoming governance period. Must be called as part of an atomic group with another transaction sending Algos to the escrow, and adds that amount to the commitment of that governor.",
+      "args":[
+          { "type":"address", "name":"beneficiary", "desc":"recipient of rewards"}
+      ],
+      "returns": {"type": "uint64", "desc": "the total commitment of this governor"}
+    },
+    {
+      "name": "Governor_vote",
+      "desc": "Submits a vote for this governor, makes inner call to Staking_vote of the voting application.",
+      "args": [
+        { "type": "uint64[4][4]", "name": "vote", "desc": "The governor's vote. A vote consists of upto four measures and each measure can have up to four options to choose from." },
+        { "type": "application", "name": "votingApp", "desc": "The voting application" }
+      ],
+      "returns": { "type": "void" }
+    },
+    {
+      "name":"Governor_withdraw",
+      "desc":"Early withdrawal from governance period, makes inner call to Staking_withdraw of the voting application.",
+      "args": [
+        { "type": "application", "name": "votingApp", "desc": "The voting application" }
+      ],
+      "returns": {"type": "void"}
+    },
+    {
+      "name":"Governor_claimRewards",
+      "desc":"Claiming rewards and withdrawing after the period ends, makes inner call to Staking_withdraw of the voting application and sends rewards to the beneficiary address.",
+      "args": [
+        { "type":"account", "name":"beneficiary", "desc":"recipient of rewards"},
+        { "type": "application", "name": "votingApp", "desc": "The voting application" }
+      ],
+      "returns": {"type": "bool"}
+    },
+    {
+      "name":"Governor_commitSpecialEscrow",
+      "desc":"Committing stake to upcoming governance period, creating a personalized escrow. Must be called as part of an atomic group with another transaction rekeying the personal escrow to the consensus-manager application, and set the commitment amount to the current balance of that escrow. Can be called at most once, before any calls to Governor_commitStake.",
+      "args":[
+          { "type":"address", "name":"beneficiary", "desc":"recipient of rewards"},
+          { "type":"account", "name":"escrow", "desc":"the escrow account"}
+      ],
+      "returns": {"type": "uint64", "desc": "the total commitment of this governor"}
+    },
+    {
+      "name":"Governor_withdrawSpecialEscrow",
+      "desc":"Early withdrawal from governance period for governors with special escrow. Makes inner calls to Staking_withdraw of the voting and mgr applications.",
+      "args": [
+        { "type":"account", "name":"escrow", "desc":"the escrow account"},
+        { "type": "application", "name": "votingApp", "desc": "The voting application" },
+        { "type": "application", "name": "mgrApp", "desc": "The consensus-manager application" }
+      ],
+      "returns": {"type": "void"}
+    },
+    {
+      "name":"Governor_claimSpecialEscrow",
+      "desc":"Claiming rewards and withdrawing after the period ends for governors with special escrow. Makes inner calls to Staking_withdraw of the voting and mgr applications, and sends rewards to the beneficiary address.",
+      "args": [
+        { "type":"account", "name":"escrow", "desc":"the escrow account"},
+        { "type":"account", "name":"beneficiary", "desc":"recipient of rewards"},
+        { "type": "application", "name": "votingApp", "desc": "The voting application" },
+        { "type": "application", "name": "mgrApp", "desc": "The consensus-manager application" }
+      ],
+      "returns": {"type": "void"}
+    },
+    {
+      "name": "getEscrowForGovernor",
+      "desc": "Get the escrow account for a governor.",
+      "args": [
+        { "type": "account", "name": "governor", "desc": "The governor's account" }
+      ],
+      "returns": { "type": "address", "desc": "The escrow account for that governor." }
+    },
+    {
+      "name": "checkEscrowForGovernor",
+      "desc": "Verify the escrow account for a governor, fails if this is not the escrow recorded in the governor's state.",
+      "args": [
+        { "type": "account", "name": "governor", "desc": "The governor's account" },
+        { "type": "address", "name": "escrow", "desc": "The escrow address" }
+      ],
+      "returns": { "type": "void" }
+    },
+    {
+      "name": "getCommitment",
+      "desc": "Get the commitment amount of a governor.",
+      "args": [
+        { "type": "account", "name": "governor", "desc": "The governor's account" }
+      ],
+      "returns": { "type": "uint64", "desc": "The amount committed by this governor, in microAlgos. Zero if not eligible." }
+    },
+    {
+      "name": "getTotalCommitment",
+      "desc": "Get the total committed stake by all eligible governors.",
+      "args": [],
+      "returns": { "type": "uint64", "desc": "The total amount committed by all eligible governors" }
+    },
+    {
+      "name": "getRewardsAmount",
+      "desc": "Get the size of the rewards pool",
+      "args": [],
+      "returns": { "type": "uint64", "desc": "The rewards-pool size, in microAlgos" }
+    }
+  ]
+}

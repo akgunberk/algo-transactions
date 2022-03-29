@@ -1,0 +1,41 @@
+{
+  "name": "afgov-consensus-mgr-app",
+  "desc": "Interface for Algorand's governance helper application to manage consensus-participating governors. Accepts bare create and delete calls from its creator.",
+  "methods": [
+    {
+      "name": "Staking_setID",
+      "desc": "Record the ID of the staking application (the caller), can only be called once.",
+      "args":[
+        { "type": "uint64", "name": "deleteAfter", "desc": "UNIX timestamp when the application can be deleted" }
+      ],
+      "returns": { "type": "void" }
+    },
+    {
+      "name": "Staking_withdraw",
+      "desc": "Withdraw from governance, closing the escrow to the governor's address.",
+      "args": [
+        { "type": "account", "name": "escrow", "desc": "The governor's escrow account" }
+        { "type": "account", "name": "governor", "desc": "The governor's address" }
+      ],
+      "returns": { "type": "void" }
+    },
+    {
+      "name": "Governor_keyreg",
+      "desc": "Registering a participation key on behalf of the escrow account for that governor. It calls checkEscrowForGovernor of the staking application to authenticate the caller's authority over this escrow account.",
+      "args": [
+       { "type": "byte[X]", "name": "partkey", "desc": "The participation key itself. We need to figure our what X is, or make it byte[] if the size is not fixed." },
+       { "type": "account", "name": "escrow", "desc": "The governor's escrow account." },
+       { "type": "application", "name": "stakingApp", "desc": "The staking application" }
+      ],
+      "returns": { "type": "void" }
+    },
+    {
+      "name": "Governor_keyUnreg",
+      "desc": "Unregistering a participation key on behalf of the escrow account for that governor. It calls checkEscrowForGovernor of the staking application to authenticate the caller's authority over this escrow account.",
+      "args": [
+        { "type": "account", "name": "escrow", "desc": "The governor's escrow account" },
+        { "type": "application", "name": "stakingApp", "desc": "The staking application" }
+      ],
+      "returns": { "type": "void" }
+    }
+}
