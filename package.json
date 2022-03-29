@@ -1,0 +1,24 @@
+{
+  "name": "algo-transactions",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest",
+    "test:watch": "jest --watchAll",
+    "start": "nodemon --watch './**/*.ts' --exec 'ts-node' index.ts"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/jest": "^27.4.1",
+    "jest": "^27.5.1",
+    "nodemon": "^2.0.15",
+    "ts-jest": "^27.1.4",
+    "ts-node": "^10.7.0"
+  },
+  "dependencies": {
+    "algosdk": "^1.15.0"
+  }
+}
