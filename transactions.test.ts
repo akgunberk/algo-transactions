@@ -14,6 +14,13 @@ describe("algorand governance on chain transactions", () => {
   const stakingAppID = StakingContractJSON.networks.default.appID;
   const votingAppID = VotingContractJSON.networks.default.appID;
 
+  const contract = new algosdk.ABIContract({
+    name: StakingContractJSON.name,
+    desc: StakingContractJSON.desc,
+    networks: StakingContractJSON.networks,
+    methods: StakingContractJSON.methods,
+  });
+
   const governor = algosdk.mnemonicToSecretKey(
     "furnace veteran cook bleak gap sell ridge uncover title approve vendor source used when ketchup hold loud cook parrot pig stable much quit abstract turn"
   );
@@ -22,12 +29,7 @@ describe("algorand governance on chain transactions", () => {
     const tsnx = await GovernorClient.signUp({
       client,
       governor,
-      contract: new algosdk.ABIContract({
-        name: StakingContractJSON.name,
-        desc: StakingContractJSON.desc,
-        networks: StakingContractJSON.networks,
-        methods: StakingContractJSON.methods,
-      }),
+      contract,
       stakingAppID,
       votingAppID,
       beneficiary: governor.addr,
@@ -46,12 +48,7 @@ describe("algorand governance on chain transactions", () => {
     const tsnx = await GovernorClient.vote({
       client,
       governor,
-      contract: new algosdk.ABIContract({
-        name: StakingContractJSON.name,
-        desc: StakingContractJSON.desc,
-        networks: StakingContractJSON.networks,
-        methods: StakingContractJSON.methods,
-      }),
+      contract,
       stakingAppID,
       votingAppID,
       beneficiary: governor.addr,
@@ -63,12 +60,7 @@ describe("algorand governance on chain transactions", () => {
     const tsnx = await GovernorClient.claim({
       client,
       governor,
-      contract: new algosdk.ABIContract({
-        name: StakingContractJSON.name,
-        desc: StakingContractJSON.desc,
-        networks: StakingContractJSON.networks,
-        methods: StakingContractJSON.methods,
-      }),
+      contract,
       stakingAppID,
       votingAppID,
       beneficiary: governor.addr,
@@ -79,12 +71,7 @@ describe("algorand governance on chain transactions", () => {
     const tsnx = await GovernorClient.withdraw({
       client,
       governor,
-      contract: new algosdk.ABIContract({
-        name: StakingContractJSON.name,
-        desc: StakingContractJSON.desc,
-        networks: StakingContractJSON.networks,
-        methods: StakingContractJSON.methods,
-      }),
+      contract,
       stakingAppID,
       votingAppID,
     });
