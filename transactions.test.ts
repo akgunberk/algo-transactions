@@ -18,8 +18,6 @@ describe("algorand governance on chain transactions", () => {
     "furnace veteran cook bleak gap sell ridge uncover title approve vendor source used when ketchup hold loud cook parrot pig stable much quit abstract turn"
   );
 
-  console.log(JSON.stringify(governor));
-
   it("signup", async () => {
     const tsnx = await GovernorClient.signUp({
       client,
