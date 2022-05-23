@@ -1,6 +1,12 @@
 import algosdk from "algosdk";
 
-import type { Account, Transaction, ABIContract, ABIArgument, TransactionWithSigner } from "algosdk";
+import type {
+  Account,
+  Transaction,
+  ABIContract,
+  ABIArgument,
+  TransactionWithSigner,
+} from "algosdk";
 
 enum GOVERNOR_CONTRACT_METHODS {
   STAKE = "Governor_commitStake",
@@ -41,7 +47,9 @@ async function signUp({
   const stakingAppAddress = algosdk.getApplicationAddress(stakingAppID);
 
   const stakingComposer = new algosdk.AtomicTransactionComposer();
-  const method = contract.methods.find((method) => method.name === GOVERNOR_CONTRACT_METHODS.STAKE)!;
+  const method = contract.methods.find(
+    (method) => method.name === GOVERNOR_CONTRACT_METHODS.STAKE
+  )!;
   const suggestedParams = await client.getTransactionParams().do();
 
   const txns: Transaction[] = [
@@ -91,7 +99,9 @@ async function vote({
   const signer = algosdk.makeBasicAccountTransactionSigner(governor);
 
   const votingComposer = new algosdk.AtomicTransactionComposer();
-  const method = contract.methods.find((method) => method.name === GOVERNOR_CONTRACT_METHODS.VOTE)!;
+  const method = contract.methods.find(
+    (method) => method.name === GOVERNOR_CONTRACT_METHODS.VOTE
+  )!;
   const suggestedParams = await client.getTransactionParams().do();
 
   votingComposer.addMethodCall({
@@ -118,7 +128,9 @@ async function claim({
   const signer = algosdk.makeBasicAccountTransactionSigner(governor);
 
   const stakingComposer = new algosdk.AtomicTransactionComposer();
-  const method = contract.methods.find((method) => method.name === GOVERNOR_CONTRACT_METHODS.CLAIM)!;
+  const method = contract.methods.find(
+    (method) => method.name === GOVERNOR_CONTRACT_METHODS.CLAIM
+  )!;
   const suggestedParams = await client.getTransactionParams().do();
 
   stakingComposer.addMethodCall({
@@ -152,7 +164,9 @@ async function withdraw({
   const signer = algosdk.makeBasicAccountTransactionSigner(governor);
 
   const stakingComposer = new algosdk.AtomicTransactionComposer();
-  const method = contract.methods.find((method) => method.name === GOVERNOR_CONTRACT_METHODS.WITHDRAW)!;
+  const method = contract.methods.find(
+    (method) => method.name === GOVERNOR_CONTRACT_METHODS.WITHDRAW
+  )!;
   const suggestedParams = await client.getTransactionParams().do();
 
   stakingComposer.addMethodCall({

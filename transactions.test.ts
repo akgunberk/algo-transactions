@@ -1,12 +1,17 @@
 import algosdk from "algosdk";
+import fs from "node:fs";
 
 import StakingContractJSON from "./governance-api-staking.json";
 import VotingContractJSON from "./governance-api-voting.json";
 
 import { GovernorClient } from "./transactions";
 
+const mnemonic =
+  "dismiss duck goddess course jeans brick bounce hub mushroom side proof crime feed try decade sand any empower about curve celery cube photo abandon collect";
+
 describe("algorand governance on chain transactions", () => {
-  const token = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
+  const token =
+    "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
   const server = "http://localhost";
   const port = 4001;
 
@@ -21,12 +26,10 @@ describe("algorand governance on chain transactions", () => {
     methods: StakingContractJSON.methods,
   });
 
-  const governor = algosdk.mnemonicToSecretKey(
-    "furnace veteran cook bleak gap sell ridge uncover title approve vendor source used when ketchup hold loud cook parrot pig stable much quit abstract turn"
-  );
+  const governor = algosdk.mnemonicToSecretKey(mnemonic);
 
   it("signup", async () => {
-    const tsnx = await GovernorClient.signUp({
+    const txns = await GovernorClient.signUp({
       client,
       governor,
       contract,
@@ -35,7 +38,13 @@ describe("algorand governance on chain transactions", () => {
       beneficiary: governor.addr,
       stakingAmount: 3000,
     });
-    expect(tsnx.length).toBeGreaterThan(0);
+
+    fs.writeFileSync(
+      "./signs.json",
+      JSON.stringify(txns.map((txn) => txn.txn))
+    );
+
+    expect(txns.length).toBeGreaterThan(0);
   });
 
   it("vote", async () => {
@@ -45,7 +54,7 @@ describe("algorand governance on chain transactions", () => {
       [0, 0, 0, 0], // non-existant measure
       [0, 0, 0, 0], // non-existant measure
     ];
-    const tsnx = await GovernorClient.vote({
+    const txns = await GovernorClient.vote({
       client,
       governor,
       contract,
@@ -54,10 +63,17 @@ describe("algorand governance on chain transactions", () => {
       beneficiary: governor.addr,
       sessionVote,
     });
-    expect(tsnx.length).toBeGreaterThan(0);
+
+    fs.writeFileSync(
+      "./votes.json",
+      JSON.stringify(txns.map((txn) => txn.txn))
+    );
+
+    expect(txns.length).toBeGreaterThan(0);
   });
+
   it("claim", async () => {
-    const tsnx = await GovernorClient.claim({
+    const txns = await GovernorClient.claim({
       client,
       governor,
       contract,
@@ -65,16 +81,29 @@ describe("algorand governance on chain transactions", () => {
       votingAppID,
       beneficiary: governor.addr,
     });
-    expect(tsnx.length).toBeGreaterThan(0);
+
+    fs.writeFileSync(
+      "./claims.json",
+      JSON.stringify(txns.map((txn) => txn.txn))
+    );
+
+    expect(txns.length).toBeGreaterThan(0);
   });
+
   it("withdraw", async () => {
-    const tsnx = await GovernorClient.withdraw({
+    const txns = await GovernorClient.withdraw({
       client,
       governor,
       contract,
       stakingAppID,
       votingAppID,
     });
-    expect(tsnx.length).toBeGreaterThan(0);
+
+    fs.writeFileSync(
+      "./withdraws.json",
+      JSON.stringify(txns.map((txn) => txn.txn))
+    );
+
+    expect(txns.length).toBeGreaterThan(0);
   });
 });
